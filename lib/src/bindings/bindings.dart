@@ -138,13 +138,13 @@ class _ObjectBoxBindings {
     obx_query_prop_max_int,
     obx_query_prop_sum_int;
 
-  obx_query_prop_find_t<OBX_string_array, Int8> obx_query_prop_string_find;
-  obx_query_prop_find_t<OBX_int64_array, Int64> obx_query_prop_int64_find;
-  obx_query_prop_find_t<OBX_int32_array, Int32> obx_query_prop_int32_find;
-  obx_query_prop_find_t<OBX_int16_array, Int16> obx_query_prop_int16_find;
-  obx_query_prop_find_t<OBX_int8_array, Int8> obx_query_prop_int8_find;
-  obx_query_prop_find_t<OBX_double_array, Double> obx_query_prop_double_find;
-  obx_query_prop_find_t<OBX_float_array, Float> obx_query_prop_float_find;
+  obx_query_prop_find_t</* OBX_string_array,*/ Void, Int8> obx_query_prop_string_find;
+  obx_query_prop_find_t</* OBX_int64_array, */ Void, Int64> obx_query_prop_int64_find;
+  obx_query_prop_find_t</* OBX_int32_array, */ Void, Int32> obx_query_prop_int32_find;
+  obx_query_prop_find_t</* OBX_int16_array, */ Void, Int16> obx_query_prop_int16_find;
+  obx_query_prop_find_t</* OBX_int8_array, */  Void, Int8> obx_query_prop_int8_find;
+  obx_query_prop_find_t</* OBX_double_array, */Void, Double> obx_query_prop_double_find;
+  obx_query_prop_find_t</* OBX_float_array, */ Void, Float> obx_query_prop_float_find;
 
   // TODO return .asFunction() -> requires properly determined static return type
   Pointer<NativeFunction<T>> _fn<T extends Function>(String name) {
@@ -310,13 +310,13 @@ class _ObjectBoxBindings {
     obx_query_prop_max_int = _fn<obx_query_prop_op_t<Int32, Int64>>("obx_query_prop_max_int").asFunction();
     obx_query_prop_sum_int = _fn<obx_query_prop_op_t<Int32, Int64>>("obx_query_prop_sum_int").asFunction();
 
-    obx_query_prop_string_find = _fn<obx_query_prop_find_t<OBX_string_array, Int8>>("obx_query_prop_string_find").asFunction();
-    obx_query_prop_int64_find = _fn<obx_query_prop_find_t<OBX_int64_array, Int64>>("obx_query_prop_int64_find").asFunction();
-    obx_query_prop_int32_find = _fn<obx_query_prop_find_t<OBX_int32_array, Int32>>("obx_query_prop_int32_find").asFunction();
-    obx_query_prop_int16_find = _fn<obx_query_prop_find_t<OBX_int16_array, Int16>>("obx_query_prop_int16_find").asFunction();
-    obx_query_prop_int8_find = _fn<obx_query_prop_find_t<OBX_int8_array, Int8>>("obx_query_prop_int8_find").asFunction();
-    obx_query_prop_double_find = _fn<obx_query_prop_find_t<OBX_double_array, Double>>("obx_query_prop_double_find").asFunction();
-    obx_query_prop_float_find = _fn<obx_query_prop_find_t<OBX_float_array, Float>>("obx_query_prop_float_find").asFunction();
+    obx_query_prop_string_find = _fn<obx_query_prop_find_t</* OBX_string_array, */ Void, Int8>>("obx_query_prop_string_find").asFunction();
+    obx_query_prop_int64_find = _fn<obx_query_prop_find_t</*OBX_int64_array, */ Void, Int64>>("obx_query_prop_int64_find").asFunction();
+    obx_query_prop_int32_find = _fn<obx_query_prop_find_t</* OBX_int32_array, */ Void, Int32>>("obx_query_prop_int32_find").asFunction();
+    obx_query_prop_int16_find = _fn<obx_query_prop_find_t</* OBX_int16_array, */ Void, Int16>>("obx_query_prop_int16_find").asFunction();
+    obx_query_prop_int8_find = _fn<obx_query_prop_find_t</* OBX_int8_array, */ Void, Int8>>("obx_query_prop_int8_find").asFunction();
+    obx_query_prop_double_find = _fn<obx_query_prop_find_t</* OBX_double_array, */ Void, Double>>("obx_query_prop_double_find").asFunction();
+    obx_query_prop_float_find = _fn<obx_query_prop_find_t</* OBX_float_array, */ Void, Float>>("obx_query_prop_float_find").asFunction();
   }
 }
 

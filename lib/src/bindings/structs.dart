@@ -1,5 +1,5 @@
 import 'dart:ffi';
-import "dart:typed_data" show Uint8List, Uint64List, Float64List, Float32List, DoubleList, FloatList;
+import "dart:typed_data";
 import "package:ffi/ffi.dart";
 
 // Note: IntPtr seems to be the the correct representation for size_t: "Represents a native pointer-sized integer in C."
@@ -126,47 +126,71 @@ class ByteBufferArray {
   get buffers => _buffers;
 }
 
-class OBX_int8_array extends Struct<OBX_int8_array> {
+class OBX_int8_array /* extends Struct<OBX_int8_array> */ {
   Pointer<Uint8> _itemsPtr;
 
-  @IntPtr() // size_t
+  // @IntPtr()() // size_t
   int count;
 
-  List<int> items() => Uint64List.view(_itemsPtr.asExternalTypedData(count: count).buffer).toList();
+  List<int> items() => Int8List.view(_itemsPtr.asExternalTypedData(count: count).buffer).toList();
+
+  OBX_int8_array.fromAddress(int address) {
+    final structPtr = Pointer<Uint64>.fromAddress(address); // bootstrap
+    _itemsPtr = Pointer<Uint8>.fromAddress(structPtr.load()); // 1st memory location contains a vector*
+    count = structPtr.elementAt(1).load<int>(); // 2nd mem loc contains the scalar count
+  }
 }
 
-class OBX_int16_array extends Struct<OBX_int16_array> {
-  Pointer<Uint16> _itemsPtr;
+class OBX_int16_array /* extends Struct<OBX_int16_array> */ {
+  Pointer<Int16> _itemsPtr;
 
-  @IntPtr() // size_t
+  // @IntPtr()() // size_t
   int count;
 
-  List<int> items() => Uint64List.view(_itemsPtr.asExternalTypedData(count: count).buffer).toList();
+  List<int> items() => Int16List.view(_itemsPtr.asExternalTypedData(count: count).buffer).toList();
+
+  OBX_int16_array.fromAddress(int address) {
+    final structPtr = Pointer<Uint64>.fromAddress(address); // bootstrap
+    _itemsPtr = Pointer<Int16>.fromAddress(structPtr.load()); // 1st memory location contains a vector*
+    count = structPtr.elementAt(1).load<int>(); // 2nd mem loc contains the scalar count
+  }
 }
 
-class OBX_int32_array extends Struct<OBX_int32_array> {
-  Pointer<Uint32> _itemsPtr;
+class OBX_int32_array /* extends Struct<OBX_int32_array> */ {
+  Pointer<Int32> _itemsPtr;
 
-  @IntPtr() // size_t
+  // @IntPtr()() // size_t
   int count;
 
-  List<int> items() => Uint64List.view(_itemsPtr.asExternalTypedData(count: count).buffer).toList();
+  List<int> items() => Int32List.view(_itemsPtr.asExternalTypedData(count: count).buffer).toList();
+
+  OBX_int32_array.fromAddress(int address) {
+    final structPtr = Pointer<Uint64>.fromAddress(address); // bootstrap
+    _itemsPtr = Pointer<Int32>.fromAddress(structPtr.load()); // 1st memory location contains a vector*
+    count = structPtr.elementAt(1).load<int>(); // 2nd mem loc contains the scalar count
+  }
 }
 
-class OBX_int64_array extends Struct<OBX_int64_array> {
-  Pointer<Uint64> _itemsPtr;
+class OBX_int64_array /* extends Struct<OBX_int64_array> */ {
+  Pointer<Int64> _itemsPtr;
 
-  @IntPtr() // size_t
+  // @IntPtr()() // size_t
   int count;
 
-  List<int> items() => Uint64List.view(_itemsPtr.asExternalTypedData(count: count).buffer).toList();
+  List<int> items() => Int64List.view(_itemsPtr.asExternalTypedData(count: count).buffer).toList();
+
+  OBX_int64_array.fromAddress(int address) {
+    final structPtr = Pointer<Uint64>.fromAddress(address); // bootstrap
+    _itemsPtr = Pointer<Int64>.fromAddress(structPtr.load()); // 1st memory location contains a vector*
+    count = structPtr.elementAt(1).load<int>(); // 2nd mem loc contains the scalar count
+  }
 }
 
-class OBX_string_array extends Struct<OBX_string_array> {
+class OBX_string_array /* extends Struct<OBX_string_array> */ {
 
   Pointer<Pointer<Uint8>> _itemsPtr;
 
-  @IntPtr() // size_t
+  // @IntPtr()() // size_t
   int count;
 
   List<String> items() {
@@ -176,25 +200,43 @@ class OBX_string_array extends Struct<OBX_string_array> {
     }
     return list;
   }
+
+  OBX_string_array.fromAddress(int address) {
+    final structPtr = Pointer<Uint64>.fromAddress(address); // bootstrap
+    _itemsPtr = Pointer<Pointer<Uint8>>.fromAddress(structPtr.load()); // 1st memory location contains a vector*
+    count = structPtr.elementAt(1).load<int>(); // 2nd mem loc contains the scalar count
+  }
 }
 
-class OBX_float_array extends Struct<OBX_float_array> {
+class OBX_float_array /* extends Struct<OBX_float_array> */ {
 
   Pointer<Float> _itemsPtr;
 
-  @IntPtr() // size_t
+  // @IntPtr()() // size_t
   int count;
 
-  List<double> items() => Float64List.view(_itemsPtr.asExternalTypedData(count: count).buffer).toList();
+  List<double> items() => Float32List.view(_itemsPtr.asExternalTypedData(count: count).buffer).toList();
+
+  OBX_float_array.fromAddress(int address) {
+    final structPtr = Pointer<Uint64>.fromAddress(address); // bootstrap
+    _itemsPtr = Pointer<Float>.fromAddress(structPtr.load()); // 1st memory location contains a vector*
+    count = structPtr.elementAt(1).load<int>(); // 2nd mem loc contains the scalar count
+  }
 }
 
 
-class OBX_double_array extends Struct<OBX_double_array> {
+class OBX_double_array /* extends Struct<OBX_double_array> */ {
 
   Pointer<Double> _itemsPtr;
 
-  @IntPtr() // size_t
+  // @IntPtr()() // size_t
   int count;
 
   List<double> items() => Float64List.view(_itemsPtr.asExternalTypedData(count: count).buffer).toList();
+
+  OBX_double_array.fromAddress(int address) {
+    final structPtr = Pointer<Uint64>.fromAddress(address); // bootstrap
+    _itemsPtr = Pointer<Double>.fromAddress(structPtr.load()); // 1st memory location contains a vector*
+    count = structPtr.elementAt(1).load<int>(); // 2nd mem loc contains the scalar count
+  }
 }

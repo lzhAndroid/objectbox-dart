@@ -31,8 +31,21 @@ class PropertyQuery {
     }
   }
 
+  /*
   Pointer<TStruct> _curryWithDefault<TStruct extends Struct, N extends NativeType>
       (obx_query_prop_find_t<TStruct, N> findFn, Pointer<N> cDefault, String errorMessage) {
+    try {
+      return checkObxPtr(findFn(_cProp, cDefault), errorMessage);
+    }finally {
+      if (cDefault.address != 0) {
+        cDefault.free();
+      }
+    }
+  }
+  */
+
+  Pointer<Void> _curryWithDefault<N extends NativeType>
+      (obx_query_prop_find_t<Void, N> findFn, Pointer<N> cDefault, String errorMessage) {
     try {
       return checkObxPtr(findFn(_cProp, cDefault), errorMessage);
     }finally {
@@ -82,33 +95,33 @@ class IntegerPropertyQuery extends PropertyQuery with _CommonNumeric {
     return _op(bindings.obx_query_prop_sum_int);
   }
 
-  List<int> _unpack8(Pointer<OBX_int8_array> ptr) {
+  List<int> _unpack8(Pointer</* OBX_int8_array */ Void> ptr) {
     try {
-      return ptr.load().items();
+      return OBX_int8_array.fromAddress(ptr.address).items();
     } finally {
       bindings.obx_int8_array_free(ptr.cast<Uint64>());
     }
   }
 
-  List<int> _unpack16(Pointer<OBX_int16_array> ptr) {
+  List<int> _unpack16(Pointer</* OBX_int16_array */ Void> ptr) {
     try {
-      return ptr.load().items();
+      return OBX_int16_array.fromAddress(ptr.address).items();
     } finally {
       bindings.obx_int16_array_free(ptr.cast<Uint64>());
     }
   }
 
-  List<int> _unpack32(Pointer<OBX_int32_array> ptr) {
+  List<int> _unpack32(Pointer</* OBX_int32_array */ Void> ptr) {
     try {
-      return ptr.load().items();
+      return OBX_int32_array.fromAddress(ptr.address).items();
     } finally {
       bindings.obx_int32_array_free(ptr.cast<Uint64>());
     }
   }
 
-  List<int> _unpack64(Pointer<OBX_int64_array> ptr) {
+  List<int> _unpack64(Pointer</* OBX_int64_array*/ Void> ptr) {
     try {
-      return ptr.load().items();
+      return OBX_int64_array.fromAddress(ptr.address).items();
     }finally {
       bindings.obx_int64_array_free(ptr.cast<Uint64>());
     }
@@ -120,16 +133,16 @@ class IntegerPropertyQuery extends PropertyQuery with _CommonNumeric {
       case OBXPropertyType.Bool:
       case OBXPropertyType.Byte:
       case OBXPropertyType.Char:  // Int8
-        return _unpack8(_curryWithDefault<OBX_int8_array, Int8>
+        return _unpack8(_curryWithDefault</* OBX_int8_array,*/ Int8>
           (bindings.obx_query_prop_int8_find, ptr.cast<Int8>(), "find int8"));
       case OBXPropertyType.Short: // Int16
-        return _unpack16(_curryWithDefault<OBX_int16_array, Int16>
+        return _unpack16(_curryWithDefault</* OBX_int16_array,*/ Int16>
           (bindings.obx_query_prop_int16_find, ptr.cast<Int16>(), "find int16"));
       case OBXPropertyType.Int:   // Int32
-        return _unpack32(_curryWithDefault<OBX_int32_array, Int32>
+        return _unpack32(_curryWithDefault</* OBX_int32_array, */ Int32>
           (bindings.obx_query_prop_int32_find, ptr.cast<Int32>(), "find int32"));
       case OBXPropertyType.Long:  // Int64
-        return _unpack64(_curryWithDefault<OBX_int64_array, Int64>
+        return _unpack64(_curryWithDefault</* OBX_int64_array, */ Int64>
           (bindings.obx_query_prop_int64_find, ptr.cast<Int64>(), "find int64"));
     }
   }
@@ -159,17 +172,17 @@ class DoublePropertyQuery extends PropertyQuery with _CommonNumeric {
     return _op(bindings.obx_query_prop_sum);
   }
 
-  List<double> _unpack32(Pointer<OBX_float_array> ptr) {
+  List<double> _unpack32(Pointer</* OBX_float_array*/ Void> ptr) {
     try {
-      return ptr.load().items();
+      return OBX_float_array.fromAddress(ptr.address).items();
     }finally {
       bindings.obx_float_array_free(ptr.cast<Uint64>());
     }
   }
 
-  List<double> _unpack64(Pointer<OBX_double_array> ptr) {
+  List<double> _unpack64(Pointer</* OBX_double_array */ Void> ptr) {
     try {
-      return ptr.load().items();
+      return OBX_double_array.fromAddress(ptr.address).items();
     }finally {
       bindings.obx_double_array_free(ptr.cast<Uint64>());
     }
@@ -179,10 +192,10 @@ class DoublePropertyQuery extends PropertyQuery with _CommonNumeric {
     final ptr = defaultValue != null ? (Pointer<Double>.allocate()..store(defaultValue)) : Pointer<Double>.fromAddress(0);
     switch(_type) {
       case OBXPropertyType.Float:
-        return _unpack32(_curryWithDefault<OBX_float_array, Float>
+        return _unpack32(_curryWithDefault</* OBX_float_array, */ Float>
           (bindings.obx_query_prop_float_find, ptr.cast<Float>(), "find float32"));
       case OBXPropertyType.Double:
-        return _unpack64(_curryWithDefault<OBX_double_array, Double>
+        return _unpack64(_curryWithDefault</* OBX_double_array, */ Double>
           (bindings.obx_query_prop_double_find, ptr.cast<Double>(), "find float64"));
     }
   }
@@ -200,9 +213,9 @@ class StringPropertyQuery extends PropertyQuery {
         , caseSensitive ? 1 : 0));
   }
 
-  List<String> _unpack(Pointer<OBX_string_array> ptr) {
+  List<String> _unpack(Pointer</* OBX_string_array */ Void> ptr) {
     try {
-      return ptr.load().items();
+      return OBX_string_array.fromAddress(ptr.address).items();
     }finally {
       bindings.obx_string_array_free(ptr.cast<Uint64>());
     }
@@ -210,7 +223,7 @@ class StringPropertyQuery extends PropertyQuery {
 
   List<String> find({String defaultValue}) {
     final ptr = defaultValue != null ? Utf8.toUtf8(defaultValue).cast<Int8>() : Pointer<Int8>.fromAddress(0);
-    return _unpack(_curryWithDefault<OBX_string_array, Int8>
+    return _unpack(_curryWithDefault</* OBX_string_array, */ Int8>
       (bindings.obx_query_prop_string_find, ptr, "find utf8"));
   }
 

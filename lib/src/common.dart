@@ -1,37 +1,47 @@
 import "dart:ffi";
+import "package:ffi/ffi.dart" show allocate, free;
 
 import "bindings/bindings.dart";
-import "ffi/cstring.dart";
 
-class Common {
-    static List<int> version() {
-        Pointer<Int32> majorPtr = Pointer<Int32>.allocate(),  minorPtr = Pointer<Int32>.allocate(), patchPtr = Pointer<Int32>.allocate();
-        bindings.obx_version(majorPtr, minorPtr, patchPtr);
-        var ret = [majorPtr.load<int>(), minorPtr.load<int>(), patchPtr.load<int>()];
-        majorPtr.free();
-        minorPtr.free();
-        patchPtr.free();
-        return ret;
-    }
+class Version {
+  final int major;
+  final int minor;
+  final int patch;
 
-    static String versionString() {
-        return CString.fromPtr(bindings.obx_version_string()).val;
-    }
+  const Version(this.major, this.minor, this.patch);
 
-    static String lastErrorString([err]) {
-        if(err != null)
-            return "code $err";
-
-        int last = bindings.obx_last_error_code();
-        int last2 = bindings.obx_last_error_secondary();
-        String desc = CString.fromPtr(bindings.obx_last_error_message()).val;
-        return "code $last, $last2 ($desc)";
-    }
+  toString() => "$major.$minor.$patch";
 }
 
-class ObjectBoxException {
-    final String message;
-    ObjectBoxException(msg) : message = "ObjectBoxException: " + msg;
+/// Returns the underlying ObjectBox-C library version
+Version versionLib() {
+  var majorPtr = allocate<Int32>(), minorPtr = allocate<Int32>(), patchPtr = allocate<Int32>();
 
-    String toString() => message;
+  try {
+    bindings.obx_version(majorPtr, minorPtr, patchPtr);
+    return Version(majorPtr.value, minorPtr.value, patchPtr.value);
+  } finally {
+    free(majorPtr);
+    free(minorPtr);
+    free(patchPtr);
+  }
+}
+
+class ObjectBoxException implements Exception {
+  final String dartMsg;
+  final int nativeCode;
+  final String nativeMsg;
+
+  ObjectBoxException({String dartMsg, int nativeCode, String nativeMsg})
+      : dartMsg = dartMsg,
+        nativeCode = nativeCode,
+        nativeMsg = nativeMsg;
+
+  @override
+  String toString() {
+    var result = 'ObjectBoxException: ';
+    if (dartMsg != null) result += dartMsg + ': ';
+    if (nativeCode != 0) result += '$nativeCode ';
+    return result + nativeMsg;
+  }
 }
